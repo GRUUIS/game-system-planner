@@ -1,112 +1,116 @@
-# 策划工作台
+# System Planner
 
-> GitHub 分发版 v0.3.0：下载仓库 ZIP 并解压，双击根目录 `index.html` 即可使用。日常使用不需要安装 Node.js，也不需要启动服务器。
-> 完整源码在 `system-planner-source-v0.3.0.zip` 中，解压后保留开发目录结构；修改后可用 `node build-standalone.mjs` 重新生成入口。
+A local workbench for game system specifications, UI layouts, mind maps, and interaction prototypes. The interface is currently in Chinese. AI integration is not included.
 
-可双击运行的系统策划工作台。当前版本不接入 AI。
+## Quick start
 
-## 运行
+1. Download this repository as a ZIP and extract it.
+2. Double-click **`index.html` in the root folder** and open it with Chrome or Edge.
+3. Start a new project, or open the included `.sysplan` example.
 
-**直接双击根目录的 `index.html`。** 用电脑上的 Chrome 或 Edge 打开即可，不需要 Node.js、不需要启动后台服务，也不需要联网。原来的 `启动工具.cmd` 现在也只负责打开这个 HTML 文件。
+The root `index.html` is the **only runnable HTML entry point**. It bundles the editor, styles, Mermaid, and a starter example. Daily use requires no installation, Node.js, server, or internet connection. On Windows, `启动工具.cmd` is an optional shortcut to the same file.
 
-编辑器、样式和 Mermaid 已全部打包进这个 HTML。可以单独复制 `index.html` 到另一台电脑使用；自己的项目另存为 `.sysplan` 一起带走。
+To try the interaction demo, click **打开交互使用示例** at the bottom left, then **交互预览** at the top right. Save your current project before switching examples.
 
-第一次打开包含签到系统使用示例，之后优先恢复当前浏览器的草稿。点击“新建”开始自己的系统案。
+## Features
 
-如需查看旧版项目，也可以在工具中选择“打开项目”，选取原来的 `data/project.json` 或之前导出的 `.sysplan`。旧版文件不会被双击版覆盖。
+- **UI canvas:** multiple pages, image upload/drop/paste, frames, rectangles, text, pen, stroke eraser, undo and redo.
+- **Layout tools:** marquee selection, groups, locking, snapping, alignment, equal spacing, resize, zoom, pan, duplication, and layer ordering.
+- **Page states:** copy a page into independent variants; edit appearance, layout, visibility, disabled controls, rules, and state notes.
+- **Interaction preview:** page navigation, overlays, closing overlays, back navigation, and state changes. Preview does not modify the design.
+- **Components:** phone frames, buttons, cards, dialogs, input boxes, and notification dots.
+- **Effect illustrations:** pulse, glow, float, and shake. SVG and HTML exports retain visual effects; print output is static.
+- **Mind maps:** child and sibling topics, renaming, dragging, reparenting, and automatic layout.
+- **Mermaid:** editable diagram source, flowchart/state/sequence templates, local rendering, and SVG export.
+- **System specifications:** guided sections, control rules, state descriptions, and checks for missing information based on the bundled game-system-spec workflow snapshot.
+- **Handoff exports:** HTML documents, Markdown, and SVG. Print the HTML document to PDF using your browser.
 
-## 功能
+## Saving your work
 
-- UI 画布：多页面、图片上传 / 拖放 / 粘贴、画框、矩形、文本、画笔、擦除整条笔迹、撤回 / 重做。
-- 布局：拖动、尺寸调整、缩放和平移、框选、Shift 多选、组合 / 取消组合、锁定、六种对齐、水平 / 垂直等间距、边缘 / 中心与网格吸附、复制、图层顺序。
-- 状态版本：复制当前界面生成新状态，分别编辑控件文字、外观、显隐、可点击性和规则；支持状态差异说明。
-- 交互预览：控件可以配置跳转页面、打开 / 关闭弹窗、返回、切换当前页面状态。预览中可以显示可点击区域，重新开始；预览不会修改设计稿。
-- 组件库：手机框、按钮、卡片、弹窗、输入框、红点。
-- 特效示意：呼吸闪烁、发光、上下浮动、左右摇动；SVG 和 HTML 导出保留效果。
-- 图与规则：图中编号自动关联控件名称、显示或操作、条件、结果、规则状态。
-- 思维导图：子主题 / 同级主题、改名、拖动、父主题调整、自动排列、主题大纲追加到功能概述。
-- Mermaid：源码编辑、流程 / 状态 / 时序模板、本地预览与 SVG 导出。
-- 策划案：依据 `game-system-spec` 的栏目和方法组织内容，汇总控件表，检查缺失信息及待确认规则。
-- 项目保存：在当前浏览器自动保存草稿，手动保存 / 打开 `.sysplan` 项目，包含原图。
-- 交接：完整 HTML 文档、Markdown 正文、单独 SVG。HTML 可用浏览器打印为 PDF。
+Drafts are automatically stored in the current browser using IndexedDB. Use **保存项目文件** or **Ctrl+S** to download a portable `.sysplan` project, including its images. Use **打开项目** to load it again.
 
-## 体验新增功能
+Save a project file before moving `index.html`, switching browsers or computers, or clearing browser data. Browser drafts are not a substitute for backups. Downloads go to the location selected by your browser. Undo history lasts only for the current session. Use one editing window per draft.
 
-在工具左下角点击 **打开交互使用示例**，再点击右上角 **交互预览**。示例可演示：领取奖励 → 已领取状态；奖励说明 → 弹窗 → 关闭；查看记录 → 返回并保留之前状态。
+## Layout and state behavior
 
-打开示例会替换当前编辑项目，可撤回恢复；自己的工作请先保存项目文件。示例文件也放在仓库根目录的 `交互与状态_使用示例.sysplan`，源码包中位于 `examples/`。
+- Marquee selection includes fully enclosed, visible, unlocked objects.
+- Click a group member to select the group. Hold Alt to select an individual member or temporarily ignore snapping.
+- Alignment and spacing treat each group as one unit. Equal spacing requires at least three objects or groups.
+- Locking prevents editing and deletion; it does not disable preview interactions.
+- Page states are independent full-page snapshots. Later edits do not automatically propagate between states.
+- Hidden controls appear faded in the editor and are omitted from previews and canvas exports. Disabled controls do not execute preview actions.
+- Each click executes one configured action. Exported handoff HTML is a document; clickable interaction previews run inside the workbench.
 
-### 布局编辑
+## Keyboard shortcuts
 
-- 在“框选”工具下拖动矩形，选择完全落在框内的对象；选择工具在空白处拖动也可框选。锁定及隐藏对象不参与框选。
-- 组合后点击任一成员会选择整组；按住 Alt 点击可单选成员。复制组合会生成一个独立的新组合。
-- 锁定限制拖动、尺寸、外观修改和删除。可从左侧图层选中锁定对象，再点击“解锁”。锁定只作用于编辑，不影响预览点击。
-- 对齐和等距排列按组合整体计算，组内位置保持不变。等距需要至少三个对象或组合。
-- 默认启用 8 像素网格吸附，并优先吸附其他对象的边缘和中心；橙色虚线指示对齐位置。按住 Alt 拖动可临时忽略吸附。
-
-### 状态与交互
-
-1. 在画布上方点击“复制为新状态”，命名为“已领取”“空列表”等。
-2. 修改新状态下的控件；默认状态保持不变。右侧可以设置“在此状态隐藏”和“不可点击”。
-3. 在“状态说明”里记录该状态的条件和规则差异。
-4. 选中控件，展开右侧“点击交互”，选择动作与目标页面 / 状态。
-5. 点击“交互预览”检查操作。返回会恢复之前的页面状态，关闭弹窗会保留其下方页面。
-
-状态以整页快照保存，复制之后独立编辑，不会自动同步公共布局。隐藏控件在编辑器中淡化显示，预览和界面导出中不显示；不可点击控件在预览中不执行动作。HTML 和 Markdown 交接文档包含所有状态、差异说明、控件显隐和交互配置；导出的 HTML 是静态交接文档，交互演示在工作台内运行。
-
-## 建议工作流程
-
-1. 新建项目，在“设计目的”中写清系统解决的问题，在“功能概述”划分本期范围。
-2. 用思维导图拆分模块；导入参考图片，在 UI 画布上布置控件。
-3. 选中控件，填写显示 / 操作、条件、结果，标记已确认、候选方案或待确认。
-4. 用 Mermaid 表达界面跳转和重要状态变化。
-5. 补充公共规则、相关配套需求、参数及待确认项。
-6. 填写关键验收情景，检查缺失内容，导出交接文档和可编辑项目。
-
-## 双击版的保存方式
-
-- **自动草稿**：保存在当前浏览器的 IndexedDB 中，刷新或下次打开同一路径时恢复。顶部“草稿已保存 · 本浏览器”表示草稿保存完成。
-- **项目文件**：点击“保存项目文件”或按 `Ctrl + S`，由浏览器保存 `.sysplan`，可以用“打开项目”重新载入。
-- **交接导出**：HTML、Markdown 和 SVG 也通过浏览器保存，位置由浏览器的下载设置决定。文件保存在下载目录或浏览器询问你选择的位置，不再自动写进工具的 `exports` 文件夹。
-- 草稿与浏览器、文件路径相关。移动 `index.html`、更换浏览器、清除浏览器数据或换电脑前，请先保存 `.sysplan` 文件；不要把自动草稿当作唯一的项目备份。
-
-切换或新建项目前，建议保存项目文件。撤回记录只在当前打开的页面内保留；重新加载不会保留撤回历史。单张图片限制 15 MB；浏览器草稿容量由浏览器决定。一次打开一个编辑窗口，避免多窗口覆盖同一个草稿。
-
-页面关闭后无需再“停止工具”。可选服务端在源码包中，供后续开发使用。
-
-## 快捷键
-
-| 操作 | 快捷键 |
+| Action | Shortcut |
 |---|---|
-| 选择 / 画框 / 矩形 / 文本 | V / F / R / T |
-| 框选 | M |
-| 组合 / 取消组合 | Ctrl + G / Ctrl + Shift + G |
-| 画笔 / 橡皮 / 平移 | P / E / H |
-| 临时平移 | 按住空格拖动 |
-| 撤回 / 重做 | Ctrl + Z / Ctrl + Shift + Z |
-| 保存项目文件 | Ctrl + S |
-| 复制一份 | Ctrl + D |
-| 复制 / 粘贴对象 | Ctrl + C / Ctrl + V |
-| 删除 | Delete |
-| 微调位置 | 方向键，Shift 为 10 像素 |
-| 导图子主题 / 同级主题 | Tab / Enter |
+| Select / marquee / frame / rectangle / text | V / M / F / R / T |
+| Pen / eraser / pan | P / E / H |
+| Temporary pan | Hold Space and drag |
+| Group / ungroup | Ctrl+G / Ctrl+Shift+G |
+| Undo / redo | Ctrl+Z / Ctrl+Shift+Z |
+| Save project file | Ctrl+S |
+| Duplicate / copy / paste | Ctrl+D / Ctrl+C / Ctrl+V |
+| Delete | Delete |
+| Move selection | Arrow keys; Shift for 10 pixels |
+| Mind-map child / sibling | Tab / Enter |
 
-## 当前边界
+## Repository package
 
-暂未包含 AI 对话、XMind 原生文件兼容、任意形状节点连线、多人协作、组件自动布局、嵌套分组、原生 DOCX 输出、时间轴特效编辑。画框为独立对象，需要与内部对象组合后才能整体移动。橡皮擦整条笔迹，不擦图片像素。每个控件每次点击执行一个配置动作，暂不包含条件表达式、连串动作和实际游戏数据运算。
+- `index.html` — the single standalone entry point.
+- `README.md` — this guide.
+- `启动工具.cmd` — optional Windows launcher.
+- `交互与状态_使用示例.sysplan` — the interaction and state example.
+- `system-planner-source-v0.3.0.zip` — complete development source, tests, examples, workflow references, and local Mermaid dependencies. It contains **no additional index.html**.
+- `MERMAID-LICENSE.txt` — the third-party Mermaid license.
 
-策划引导是 skill 的结构和检查项，未调用语言模型，不会自动理解图片、写规则或检测语义矛盾。此版本随附的是 2026-09-24 的 skill 快照，安装目录内的 skill 后续更新不会自动同步。
+To develop the tool, extract the source archive into the **same root folder** as `index.html`. The source layout is:
 
-## 仓库内容
+```text
+index.html                       # Only entry point; generated by the build
+public/
+  workbench.template.html        # Development template, not a second entry
+  app.js
+  model.js
+  studio-model.js
+  storage.js
+  styles.css
+  vendor/
+examples/
+references/
+build-standalone.mjs
+server.cjs
+package.json
+```
 
-- **index.html**：独立启动入口，已包含编辑器、样式、流程图库和使用示例。
-- **启动工具.cmd**：Windows 双击启动入口。
-- **交互与状态_使用示例.sysplan**：在工作台中通过“打开项目”载入。
-- **system-planner-source-v0.3.0.zip**：完整开发源码、测试、系统策划 skill 快照、示例与 Mermaid 依赖；解压后运行 `npm test` 测试，运行 `npm run build` 重建入口。
-- **MERMAID-LICENSE.txt**：Mermaid 第三方许可证，源码包内也保留原许可证。
+The source archive excludes local drafts, logs, and test exports. In an existing development checkout, local `data/` and `exports/` folders may still contain your own files; keep them when updating.
 
-源码包中的 `public/` 是开发源码，`examples/` 是示例，`references/` 是策划快照与验证记录。源码包未包含个人草稿、运行日志及测试导出；可选服务版首次保存时会创建 `data/`，导出时创建 `exports/`。
+## Development
 
-Mermaid 为第三方开源组件，版本和来源见源码包 `references/mermaid-package.json`。使用方式依据 [Mermaid 官方文档](https://mermaid.js.org/config/usage)。
+Use Node.js 22 or later. No dependency installation is required for the bundled source.
 
-正式入口将代码与流程图库内联打包，不从文件系统加载模块。参考 [MDN JavaScript 模块说明](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)。
+```sh
+npm test
+npm run build
+```
+
+The build reads `public/workbench.template.html` and updates only the root `index.html`. If `data/project.json` exists, its content becomes the initial project embedded in the generated file; otherwise, the build uses the supplied example. Use the example when preparing a public distribution.
+
+For optional development-server mode:
+
+```sh
+npm start
+```
+
+Open `http://127.0.0.1:4317/`. Both `/` and `/index.html` serve the development template without creating another file named `index.html`. This mode saves to `data/` and exports to `exports/`; its storage is separate from standalone browser drafts.
+
+## Current limitations
+
+No AI chat, native XMind import/export, multiplayer collaboration, nested groups, component auto-layout, native DOCX output, or effect timeline editor. Frames are independent objects; group them with their contents to move everything together. The eraser removes entire pen strokes, not image pixels. Interaction previews do not evaluate conditional expressions, chained actions, or real game backend data.
+
+The planning guide is a bundled workflow snapshot dated 2026-09-24. It does not call a language model, interpret images, generate rules, or detect semantic contradictions automatically. A desktop window at least 1100 pixels wide is recommended; narrow windows hide the property panel.
+
+## Third-party component
+
+Mermaid is bundled for offline diagram rendering. Its license is provided in `MERMAID-LICENSE.txt` and in the source archive at `public/vendor/package/LICENSE`; version metadata is in `references/mermaid-package.json`.
