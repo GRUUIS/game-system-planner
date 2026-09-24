@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>策划工作台 · System Planner</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="brandmark">◈</span><strong>策划工作台</strong><span class="local-tag">LOCAL</span></div>
+  <input id="project-name" aria-label="项目名称" value="未命名系统"><span id="save-status">正在打开…</span>
+  <div class="header-actions"><button id="new-project">新建</button><button id="open-project">打开项目</button><button id="save-project">保存项目文件</button><button class="primary" id="export">导出交接 ▾</button></div>
+</header>
+<div class="app">
+<aside class="sidebar">
+  <div class="side-title">工作空间 <span>01</span></div>
+  <nav id="view-tabs">
+    <button data-view="canvas" class="active"><span>▦</span>UI 画布</button>
+    <button data-view="mind"><span>⌘</span>思维导图</button>
+    <button data-view="mermaid"><span>⑂</span>Mermaid 流程图</button>
+    <button data-view="spec"><span>▤</span>系统策划案</button>
+  </nav>
+  <section id="left-context"></section>
+  <div class="side-bottom"><div class="skill-badge"><span class="green-dot"></span>系统策划 skill</div><button id="open-interaction-example">打开交互使用示例 ↗</button><button id="help">使用说明与快捷键 ↗</button></div>
+</aside>
+<main>
+  <div class="workspace-head"><div><span class="eyebrow" id="view-eyebrow">INTERFACE</span><h1 id="view-title">UI 画布</h1></div><div class="head-buttons"><button id="undo" title="Ctrl + Z">↶ 撤回</button><button id="redo" title="Ctrl + Shift + Z">↷ 重做</button><button id="export-view">导出当前图</button><button id="preview-start" class="primary">▶ 交互预览</button></div></div>
+  <section id="canvas-view" class="view active">
+    <div class="statebar"><span>界面状态</span><select id="page-state" aria-label="当前界面状态"></select><button id="add-state">＋ 复制为新状态</button><button id="edit-state">状态说明</button><button id="remove-state" title="删除当前状态">×</button></div>
+    <div class="toolbar" id="canvas-tools">
+      <button data-tool="select" class="active" title="V">↖ 选择</button><button data-tool="marquee" title="M">▧ 框选</button><button data-tool="frame" title="F">▣ 画框</button><button data-tool="rect" title="R">□ 矩形</button><button data-tool="text" title="T">T 文本</button><button data-tool="pen" title="P">〰 画笔</button><button data-tool="eraser" title="E，擦除整条笔迹">◇ 橡皮</button><button data-tool="hand" title="H / 按住空格">✥ 平移</button><span class="separator"></span><button id="upload-image">＋ 图片</button>
+    </div>
+    <div class="layoutbar"><button id="group-elements" title="Ctrl + G">组合</button><button id="ungroup-elements" title="Ctrl + Shift + G">取消组合</button><button id="lock-elements">锁定</button><select id="arrange-elements" aria-label="对齐和分布"><option value="">对齐 / 分布…</option><option value="left">左对齐</option><option value="centerX">水平居中</option><option value="right">右对齐</option><option value="top">顶对齐</option><option value="centerY">垂直居中</option><option value="bottom">底对齐</option><option value="distributeX">水平等间距</option><option value="distributeY">垂直等间距</option></select><label><input id="snap-enabled" type="checkbox" checked> 吸附</label><span>Alt 临时忽略吸附 / 单选组内控件</span></div>
+    <div class="stage" id="canvas-stage"><svg id="canvas-svg" xmlns="http://www.w3.org/2000/svg" tabindex="0" aria-label="UI 布局画布"></svg><div class="stage-hint">拖入图片 · 双击编辑文字 · Shift 多选</div><div class="zoom-control"><button id="zoom-out">−</button><button id="zoom-fit">100%</button><button id="zoom-in">＋</button></div></div>
+  </section>
+  <section id="mind-view" class="view"><div class="toolbar"><button id="add-child">＋ 子主题 <kbd>Tab</kbd></button><button id="add-sibling">＋ 同级主题 <kbd>Enter</kbd></button><button id="layout-mind">整理布局</button><button id="delete-node">删除分支</button><span class="toolbar-note">双击改名 · 拖动位置 · 滚轮缩放</span></div><div class="stage" id="mind-stage"><svg id="mind-svg" xmlns="http://www.w3.org/2000/svg" tabindex="0" aria-label="思维导图"></svg><button class="fit-mind" id="fit-mind">适应窗口</button></div></section>
+  <section id="mermaid-view" class="view"><div class="toolbar"><select id="mermaid-template" aria-label="流程图模板"><option value="">插入模板…</option><option value="flow">界面跳转</option><option value="state">状态转换</option><option value="sequence">操作时序</option></select><button class="primary" id="render-mermaid">刷新预览</button><span id="mermaid-status"></span></div><div class="mermaid-split"><div class="code-pane"><div class="pane-label">MERMAID 源码</div><textarea id="mermaid-source" spellcheck="false" aria-label="Mermaid 源码"></textarea></div><div id="mermaid-preview"></div></div></section>
+  <section id="spec-view" class="view"><div id="spec-content"></div></section>
+  <footer><span id="footer-left">本地工作空间</span><span>画布与规则，一起交接</span></footer>
+</main>
+<aside class="inspector"><div class="inspector-tabs"><button id="properties-tab" class="active">属性与规则</button><button id="guide-tab">策划引导</button></div><div id="inspector-content"></div></aside>
+</div>
+<input type="file" id="image-input" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden><input type="file" id="project-input" accept=".json,.sysplan" hidden>
+<div id="toast" role="status"></div><dialog id="dialog"><div id="dialog-content"></div><button class="dialog-close" id="close-dialog">关闭</button></dialog>
+<dialog id="preview-dialog"><div class="preview-header"><strong>交互预览</strong><span id="preview-location"></span><button id="preview-back">← 返回</button><button id="preview-reset">重新开始</button><button id="preview-close">退出预览 ×</button></div><div id="preview-stage"></div><div class="preview-footer"><span id="preview-feedback">点击控件演示交互</span><label><input id="preview-hotspots" type="checkbox">显示可点击区域</label></div></dialog>
+<script src="vendor/mermaid.min.js"></script>
+<script type="module" src="app.js"></script>
+</body></html>
