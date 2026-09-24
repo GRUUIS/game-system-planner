@@ -1,0 +1,21 @@
+import {writeFile,mkdir} from 'node:fs/promises';
+import {newProject,makeElement,layoutMind,component} from './public/model.js';
+const p=newProject();p.name='签到系统 · 使用示例';p.boards[0].name='签到主界面';
+const items=p.boards[0].elements;
+const add=(type,props)=>{const e=makeElement(type,props);items.push(e);return e;};
+add('frame',{name:'签到面板',x:80,y:50,w:360,h:620,radius:26,fill:'#ffffff',stroke:'#c1d0c6'});
+add('text',{name:'界面标题',text:'每日签到',x:109,y:85,w:275,h:48,fontSize:26,fill:'#365247',rule:{action:'展示系统名称',condition:'打开签到界面',result:'静态展示',status:'候选方案'}});
+add('text',{name:'辅助说明',text:'每天来看看，收下一份小惊喜',x:111,y:140,w:300,h:30,fontSize:14,fill:'#8b9e91'});
+for(let i=0;i<6;i++){const col=i%3,row=Math.floor(i/3);add('rect',{name:`第 ${i+1} 天奖励`,text:`第 ${i+1} 天\n◇\n奖励待配置`,x:108+col*102,y:200+row*133,w:92,h:114,fontSize:14,fill:i===0?'#e9f2ec':'#f6f8f5',stroke:i===0?'#87a994':'#dde6df',textColor:'#668372',rule:{action:'展示对应日期及奖励信息',condition:'进入签到界面',result:'按领取状态区分外观',status:'候选方案'}});}
+add('rect',{name:'第 7 天奖励',text:'第 7 天　　◇　　奖励待配置',x:108,y:467,w:296,h:70,fontSize:16,fill:'#faf1dc',stroke:'#dec691',textColor:'#a58a52'});
+const button=component('button',108,570)[0];button.w=296;button.h=52;button.name='领取奖励';button.text='领取今日奖励';button.effect='glow';button.rule={action:'点击领取当前可领取奖励',condition:'满足领取条件且本次尚未领取',result:'发放奖励，刷新奖励及按钮状态',status:'候选方案'};items.push(button);
+add('text',{name:'规则批注',text:'界面示例\n\n控件编号对应交接表。\n领取条件、刷新时间及\n奖励数值均需策划确认。\n\n选中按钮，可修改规则\n或切换特效示意。',x:500,y:145,w:280,h:270,fontSize:17,fill:'#798e80'});
+p.mind=layoutMind([{id:'root',parent:null,text:'签到系统',x:0,y:0},{id:'entry',parent:'root',text:'入口与面板',x:0,y:0},{id:'reward',parent:'root',text:'奖励领取',x:0,y:0},{id:'states',parent:'root',text:'状态与重置',x:0,y:0},{id:'condition',parent:'reward',text:'领取条件',x:0,y:0},{id:'result',parent:'reward',text:'奖励到账反馈',x:0,y:0},{id:'reset',parent:'states',text:'刷新规则待确认',x:0,y:0}]);
+p.sections.purpose='【示例】让玩家查看签到进度及奖励，并完成当前可领取奖励的领取。\n本项目只用于展示工作台的功能，不代表已确定的产品需求。';
+p.sections.overview='【候选方案】\n1. 签到入口与奖励面板。\n2. 奖励状态展示与领取。\n3. 领取后反馈及刷新。\n\n本期范围：待确认。';
+p.sections.rules='【候选方案】满足领取条件时，玩家点击领取按钮后，发放当前奖励并刷新领取状态。\n\n【待确认】开放条件、重复领取限制、周期重置规则与奖励配置。';
+p.sections.questions='1. 签到按连续登录还是累计登录计算？\n2. 何时刷新，跨日时当前界面怎样更新？\n3. 是否允许补签？若允许，应另行明确范围。';
+p.sections.acceptance='【候选情景】\n初始：当前奖励满足领取条件，且尚未领取。\n操作：点击领取按钮。\n预期：奖励到账，界面更新为已领取状态。';
+await mkdir(new URL('./examples/',import.meta.url),{recursive:true});
+await writeFile(new URL('./examples/签到系统_使用示例.sysplan',import.meta.url),JSON.stringify(p,null,2));
+await writeFile(new URL('./references/upload-test.png',import.meta.url),Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a/ukAAAAASUVORK5CYII=','base64'));

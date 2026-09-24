@@ -1,0 +1,12 @@
+{
+  "name": "system-planner-local",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build-standalone.mjs",
+    "start": "node server.cjs",
+    "test": "node model.test.mjs && node studio.test.mjs"
+  },
+  "engines": {"node": ">=22"}
+}

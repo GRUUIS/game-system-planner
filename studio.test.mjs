@@ -1,0 +1,47 @@
+import assert from 'node:assert/strict';
+import {newProject,makeElement,clone} from './public/model.js';
+import {copyState,stateOf,pageStates,groupSelection,isLocked,marqueeSelection,duplicateElements,arrangeElements,snapMove,startPreview,transitionPreview,activePreviewView} from './public/studio-model.js';
+
+const box=(id,x,y=0,w=20,h=20)=>makeElement('rect',{id,x,y,w,h});
+const items=[box('a',0),box('b',40),box('c',100)];
+items[0].groupId=items[1].groupId='group-a';
+assert.deepEqual(groupSelection(items,['a']),['a','b']);
+assert.deepEqual(marqueeSelection(items,{x:-1,y:-1,w:22,h:22}),['a','b']);
+items[0].locked=true;
+assert.equal(isLocked(items[1],items),true);
+assert.deepEqual(marqueeSelection(items,{x:-1,y:-1,w:122,h:22}),['c']);
+const copies=duplicateElements(items.slice(0,2));
+assert.notEqual(copies[0].id,items[0].id);assert.notEqual(copies[0].groupId,items[0].groupId);
+assert.equal(copies[0].groupId,copies[1].groupId);assert.equal(copies[0].locked,false);
+
+const positions=[box('x',0),box('y',20,0,40),box('z',140,0,20)];
+arrangeElements(positions,['x','y','z'],'distributeX');
+assert.equal(positions[1].x,60);assert.equal(positions[2].x,140);
+positions[0].groupId=positions[1].groupId='one';
+const oldDistance=positions[1].x-positions[0].x;
+arrangeElements(positions,['x','y','z'],'right');
+assert.equal(positions[1].x-positions[0].x,oldDistance);
+const snap=snapMove([box('a',0)],77,0,[box('b',100)],6);
+assert.equal(snap.dx,80);assert.ok(snap.guides.some(g=>g.axis==='x'&&g.value===100));
+
+const project=newProject(),page=project.boards[0];page.elements=[box('claim',0)];
+const claimed=copyState(page,'default','已领取');claimed.elements[0].text='已领取';claimed.elements[0].disabled=true;
+assert.notEqual(page.elements[0].text,claimed.elements[0].text);assert.equal(page.elements[0].disabled,undefined);
+assert.equal(stateOf(page,claimed.id).name,'已领取');assert.equal(pageStates(page).length,2);
+const popup={id:'popup',name:'弹窗',elements:[box('close',0)]};
+const records={id:'records',name:'记录',elements:[box('back',0)]};project.boards.push(popup,records);
+const original=JSON.stringify(project);
+let session=startPreview(page.id);
+session=transitionPreview(project,session,{type:'setState',targetStateId:claimed.id});
+session=transitionPreview(project,session,{type:'openOverlay',targetBoardId:'popup'});
+assert.equal(activePreviewView(session).boardId,'popup');
+session=transitionPreview(project,session,{type:'navigate',targetBoardId:'records'});
+assert.equal(session.boardId,'records');assert.equal(session.overlays.length,0);
+session=transitionPreview(project,session,{type:'back'});
+assert.equal(session.boardId,page.id);assert.equal(session.stateId,claimed.id);assert.equal(session.overlays[0].boardId,'popup');
+session=transitionPreview(project,session,{type:'closeOverlay'});assert.equal(session.overlays.length,0);
+assert.equal(JSON.stringify(project),original,'预览不应改写设计项目');
+assert.throws(()=>transitionPreview(project,session,{type:'navigate',targetBoardId:'removed'}),/目标页面已被删除/);
+assert.throws(()=>transitionPreview(project,session,{type:'setState',targetStateId:'removed'}),/目标状态已被删除/);
+const saved=JSON.parse(JSON.stringify(project));assert.equal(stateOf(saved.boards[0],claimed.id).elements[0].disabled,true);
+console.log('通过：组合与锁定、复制分组、框选、等距排列、吸附、状态独立、交互返回与弹窗恢复、预览不改稿、状态保存。');
